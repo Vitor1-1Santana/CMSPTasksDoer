@@ -58,7 +58,8 @@ public class CMSPTasksDoer{
                             Task task = iterator.next();
                             if(task.isIsEssay() || task.isIsExam()){
                                 System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
-                                return;
+                                iterator.remove();
+                                continue;
                             }
                             loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
                             task.getQuestions().iterator().forEachRemaining((question) -> {
