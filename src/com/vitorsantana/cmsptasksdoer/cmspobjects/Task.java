@@ -4,6 +4,7 @@
  */
 package com.vitorsantana.cmsptasksdoer.cmspobjects;
 
+import com.vitorsantana.cmsptasksdoer.CMSPTasksDoer;
 import java.util.ArrayList;
 import java.util.Random;
 import org.json.JSONObject;
@@ -53,7 +54,7 @@ public class Task{
         
         answerForm.put("answers", answers).put("executed_on", publicationTarget).put("accessed_on", "room").put("status", "submitted");
         //System.out.println(answerForm.toString());
-        //CMSPTasksDoer.cmspCommunicator.sendTaskSubmition(this, answerForm);
+        CMSPTasksDoer.cmspCommunicator.sendTaskSubmition(this, answerForm);
     }
     
 
