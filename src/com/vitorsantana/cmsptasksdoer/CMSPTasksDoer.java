@@ -9,6 +9,7 @@ import com.vitorsantana.cmsptasksdoer.cmspobjects.User;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 
 /**
  *
@@ -18,6 +19,7 @@ public class CMSPTasksDoer{
     
     public static CmspCommunicator cmspCommunicator;
     private static LoginUI loginUI;
+    private static boolean doTasksBoolean = false;
 
     /**
      * @param args the command line arguments
@@ -31,7 +33,6 @@ public class CMSPTasksDoer{
             
         }
         
-        
         loginUI.password.addActionListener((e) -> {
             
             loginUser(Integer.parseInt(loginUI.raNumber.getText()), loginUI.digitNumber.getText().charAt(0), loginUI.password.getPassword());
@@ -41,44 +42,28 @@ public class CMSPTasksDoer{
         });
     }
     
+    /**
+     * 
+     * This method calls the cmspCommunicator, and sends the credentials to the iptv servers,
+     * after this, it returns a User, the User object is used to set the Name, Nickname and 
+     * number of tasks in the loginWarning UI.
+     * 
+     * @param ra
+     * @param digit
+     * @param password 
+     */
     private static void loginUser(int ra, char digit, char[] password) {
         loginUI.errorLabel.setText("");
         try{
             User user = cmspCommunicator.loginToCmsp(ra, digit, password);
             LoginWarning loginWarning = new LoginWarning(loginUI, true);
             loginWarning.setNameAndNick(user.getName(), user.getNick());
+            loginWarning.cancelButton.addActionListener((e) -> {
+                doTasksBoolean = false;
+                loginWarning.dispose();
+            });
             loginWarning.doTasks.addActionListener((e) -> {
-                new Thread(){
-                    @Override
-                    public void run(){
-                        
-                        
-                        Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
-                        while(iterator.hasNext()){
-                            Task task = iterator.next();
-                            if(task.isIsEssay() || task.isIsExam()){
-                                System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
-                                iterator.remove();
-                                continue;
-                            }
-                            loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
-                            task.getQuestions().iterator().forEachRemaining((question) -> {
-                                loginWarning.progressInfo.setText("Respondendo questão do ID: " + question.getId() + " " + task.getQuestions().indexOf(question) + "/" + (task.getQuestions().size()-1));
-                                loginWarning.progressBar.setValue(task.getQuestions().indexOf(question));
-                                question.answerQuestion();
-                            });
-                            task.submitTask();
-                            iterator.remove();
-                            loginWarning.setNameAndNick(user.getName(), user.getNick());
-                            System.out.println("Task " + task.getTitle() + " submitted! :D");
-                        }
-                        
-                        
-                        
-                    }
-                    
-                    
-                }.start();
+                doTasks(loginWarning, user);
             });
             loginWarning.setVisible(true);
         }catch(Exception ex){
@@ -90,5 +75,51 @@ public class CMSPTasksDoer{
             }
         }
         }
+    
+    /**
+     * 
+     * This method iterates all the tasks and all the questions inside tasks,
+     * and then, call the method answerQuestion() inside the question.
+     * After all the questions are answered, the submitTask() is called, submitting
+     * the task to the iptv servers. After submitted the task is removed from the task list.
+     * 
+     * @param loginWarning
+     * @param user 
+     */
+    private static void doTasks(LoginWarning loginWarning, User user){
+        doTasksBoolean = !doTasksBoolean;
+                new Thread(){
+                    @Override
+                    public void run(){
+                        
+                        Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
+                        while(iterator.hasNext() && doTasksBoolean){
+                            loginWarning.doTasks.setText("Parar");
+                            Task task = iterator.next();
+                            if(task.isIsEssay() || task.isIsExam()){
+                                System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
+                                iterator.remove();
+                                continue;
+                            }
+                            loginWarning.progressInfo.setText("Respondendo tarefa: "+task.getTitle());
+                            loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
+                            task.getQuestions().iterator().forEachRemaining((question) -> {
+                                loginWarning.progressBar.setString("Respondendo questão do ID: " + question.getId() + " " + task.getQuestions().indexOf(question) + "/" + (task.getQuestions().size()-1));
+                                loginWarning.progressBar.setValue(task.getQuestions().indexOf(question));
+                                question.answerQuestion();
+                            });
+                            task.submitTask();
+                            iterator.remove();
+                            loginWarning.setNameAndNick(user.getName(), user.getNick());
+                            System.out.println("Task " + task.getTitle() + " submitted! :D");
+                        }
+                        
+                        
+                        loginWarning.doTasks.setText("Realizar tarefas");
+                    }
+                    
+                    
+                }.start();
+    }
     
 }

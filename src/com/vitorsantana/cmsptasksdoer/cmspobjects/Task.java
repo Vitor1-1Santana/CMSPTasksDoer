@@ -33,7 +33,7 @@ public class Task{
     public void submitTask(){
         JSONObject answerForm = new JSONObject();
         JSONObject answers = new JSONObject();
-        answerForm.put("duration", new Random(System.currentTimeMillis()).nextDouble(5*questions.size(), 10*questions.size()));
+        answerForm.put("duration", new Random(System.currentTimeMillis()).nextDouble(30*questions.size(), 40*questions.size()));
         questions.forEach((question) -> {
             if(question.getTypeT().equals(Question.Types.info)){
                 return;
