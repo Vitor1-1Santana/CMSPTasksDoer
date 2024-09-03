@@ -73,6 +73,7 @@ public class LoginWarning extends javax.swing.JDialog{
         progressBar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         progressBar.setMaximumSize(new java.awt.Dimension(146, 14));
         progressBar.setMinimumSize(new java.awt.Dimension(146, 14));
+        progressBar.setStringPainted(true);
 
         progressInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         progressInfo.setText("progressInfo");
@@ -112,8 +113,8 @@ public class LoginWarning extends javax.swing.JDialog{
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(doTasks)
                         .addGap(93, 93, 93)
-                        .addComponent(optionsButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(optionsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                        .addGap(125, 125, 125)
                         .addComponent(cancelButton))
                     .addComponent(progressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -127,7 +128,7 @@ public class LoginWarning extends javax.swing.JDialog{
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(nickName)))
-                        .addGap(0, 265, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
