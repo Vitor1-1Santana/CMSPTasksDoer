@@ -108,10 +108,15 @@ public class CMSPTasksDoer{
                                 loginWarning.progressBar.setValue(task.getQuestions().indexOf(question));
                                 question.answerQuestion();
                             });
+                            
                             task.submitTask();
                             iterator.remove();
                             loginWarning.setNameAndNick(user.getName(), user.getNick());
-                            System.out.println("Task " + task.getTitle() + " submitted! :D");
+                            if(task.isAbort()){
+                                System.out.println("TASK HAS TEXT QUESTIOM! NOT DOING TASK: " + task.getTitle());
+                            }else{
+                                System.out.println("Task " + task.getTitle() + " submitted! :D");
+                            }
                         }
                         
                         

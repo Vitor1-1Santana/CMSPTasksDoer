@@ -19,7 +19,7 @@ import org.json.JSONObject;
  */
 public class Question{
     
-    public enum Types{info, multi, single, cloud, order_sentences, fill_words, essay, text, true_false}
+    public enum Types{info, multi, single, cloud, order_sentences, fill_words, essay, text, true_false, text_ai}
     
     private int id;
     private Types typeT;
@@ -40,6 +40,10 @@ public class Question{
     }
     
     public void answerQuestion(){
+        if(task.isAbort()){
+            return;
+        }
+        
         switch(typeT){
             case single -> singleQuestionAnswerer();
             case multi -> multiQuestionAnswer();
@@ -47,6 +51,8 @@ public class Question{
             case order_sentences -> orderSentencesAnswer();
             case fill_words -> fillWordsAnswer();
             case true_false -> trueFalseAnswer();
+            case text_ai -> task.abortTask();
+            case text -> task.abortTask();
             default -> {
             }
                 
@@ -84,10 +90,10 @@ public class Question{
     
     private void multiQuestionAnswer(){
         boolean[] answers = new boolean[options.length()];
-        boolean isAnswerCorrect = false;
+        boolean isAnswerCorrect;
         int answerShift = 0;
         answers[answerShift] = true;
-        JSONObject answer = null;
+        JSONObject answer;
         StringBuilder optionsBuilder;
         for (int i = 0; i < Math.pow(2, answers.length); i++) {
             optionsBuilder = new StringBuilder();

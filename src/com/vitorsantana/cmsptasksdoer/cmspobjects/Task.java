@@ -7,6 +7,7 @@ package com.vitorsantana.cmsptasksdoer.cmspobjects;
 import com.vitorsantana.cmsptasksdoer.CMSPTasksDoer;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import org.json.JSONObject;
 
 /**
@@ -21,6 +22,7 @@ public class Task{
     private boolean isEssay;
     private ArrayList<Question> questions = new ArrayList<>();
     private String publicationTarget = "";
+    private boolean abort = false;
 
     public Task(int id, String title, boolean isExam, boolean isEssay, String publicationTarget){
         this.id = id;
@@ -31,9 +33,13 @@ public class Task{
     }
     
     public void submitTask(){
+        if(abort){
+            return;
+        }
         JSONObject answerForm = new JSONObject();
         JSONObject answers = new JSONObject();
-        answerForm.put("duration", new Random(System.currentTimeMillis()).nextDouble(30*questions.size(), 40*questions.size()));
+        ThreadLocalRandom.current().setSeed(System.currentTimeMillis());
+        answerForm.put("duration", ThreadLocalRandom.current().nextDouble(30*questions.size(), 40*questions.size()));
         questions.forEach((question) -> {
             if(question.getTypeT().equals(Question.Types.info)){
                 return;
@@ -96,6 +102,14 @@ public class Task{
 
     public void setQuestions(ArrayList<Question> questions){
         this.questions = questions;
+    }
+    
+    public void abortTask(){
+        abort = true;
+    }
+
+    public boolean isAbort(){
+        return abort;
     }
     
     
