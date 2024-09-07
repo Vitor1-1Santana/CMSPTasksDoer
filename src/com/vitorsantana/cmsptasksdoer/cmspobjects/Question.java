@@ -33,7 +33,12 @@ public class Question{
     public Question(int id, String type, boolean required, JSONObject options, Task task){
         this.id = id;
         this.type = type;
-        this.typeT = Types.valueOf(type.replace("-", "_"));
+        try{
+            this.typeT = Types.valueOf(type.replace("-", "_"));
+        }catch(Exception e){
+            Logger.getLogger(Question.class.getName()).log(Level.SEVERE, e.fillInStackTrace().toString());
+            this.typeT = null;
+        }
         this.required = required;
         this.options = options;
         this.task = task;
@@ -43,6 +48,34 @@ public class Question{
         if(task.isAbort()){
             return;
         }
+//        switch(typeT){
+//            case single:
+//                singleQuestionAnswerer();
+//                break;
+//            case multi:
+//                multiQuestionAnswer();
+//                break;
+//            case cloud:
+//                cloudQuestionAnswer();
+//                break;
+//            case order_sentences:
+//                orderSentencesAnswer();
+//                break;
+//            case fill_words:
+//                fillWordsAnswer();
+//                break;
+//            case true_false:
+//                trueFalseAnswer();
+//                break;
+//            case text_ai:
+//                task.abortTask();
+//                break;
+//            case text:
+//                task.abortTask();
+//                break;
+//            default:
+//                break;
+//        }
         
         switch(typeT){
             case single -> singleQuestionAnswerer();
@@ -54,6 +87,9 @@ public class Question{
             case text_ai -> task.abortTask();
             case text -> task.abortTask();
             default -> {
+                if(isRequired()){
+                    task.abortTask();
+                }
             }
                 
         }

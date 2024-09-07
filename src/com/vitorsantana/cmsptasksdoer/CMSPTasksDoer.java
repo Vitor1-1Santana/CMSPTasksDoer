@@ -6,10 +6,12 @@ package com.vitorsantana.cmsptasksdoer;
 
 import com.vitorsantana.cmsptasksdoer.cmspobjects.Task;
 import com.vitorsantana.cmsptasksdoer.cmspobjects.User;
+import java.awt.Toolkit;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -73,8 +75,9 @@ public class CMSPTasksDoer{
             }else{
                 loginUI.errorLabel.setText("Falha ao fazer login :(");
             }
+            
         }
-        }
+    }
     
     /**
      * 
@@ -113,12 +116,14 @@ public class CMSPTasksDoer{
                             iterator.remove();
                             loginWarning.setNameAndNick(user.getName(), user.getNick());
                             if(task.isAbort()){
-                                System.out.println("TASK HAS TEXT QUESTIOM! NOT DOING TASK: " + task.getTitle());
+                                System.out.println("TASK HAS TEXT QUESTION! NOT DOING TASK: " + task.getTitle());
                             }else{
                                 System.out.println("Task " + task.getTitle() + " submitted! :D");
                             }
                         }
-                        
+                        loginWarning.progressInfo.setText("FINALIZADO :D");
+                        loginWarning.progressBar.setString("FINALIZADO :D");
+                        Toolkit.getDefaultToolkit().beep();
                         
                         loginWarning.doTasks.setText("Realizar tarefas");
                     }

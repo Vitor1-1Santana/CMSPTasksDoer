@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -93,9 +94,13 @@ public class CmspCommunicator{
         HttpResponse<String> tasksResponse = sendRequest(httpClient, httpRequest);;
         JSONArray tasks = new JSONArray(tasksResponse.body());
         tasks.forEach((task) -> {
-            
-            taskList.add(new Task(((JSONObject)task).getInt("id"), ((JSONObject)task).getString("title"), ((JSONObject)task).getBoolean("is_exam"), ((JSONObject)task).getBoolean("is_essay"), roomName));
-            getQuestion(taskList.get(taskList.size()-1));
+            try{
+                taskList.add(new Task(((JSONObject)task).getInt("id"), ((JSONObject)task).getString("title"), ((JSONObject)task).getBoolean("is_exam"), ((JSONObject)task).getBoolean("is_essay"), roomName));
+                getQuestion(taskList.get(taskList.size()-1));
+            }catch(JSONException ex){
+                ErrorHandler.handleException(CmspCommunicator.class.getName(),ex,"Failed to parse task: "+((JSONObject)task).getString("title")+" with the following Exception: ");
+                Logger.getLogger(CmspCommunicator.class.getName()).log(Level.WARNING, "Failed to parse task: "+((JSONObject)task).getString("title")+" with the following Exception: ", ex.fillInStackTrace());
+            }
         });
         
         
@@ -131,9 +136,30 @@ public class CmspCommunicator{
     
     private HttpResponse<String> sendRequest(HttpClient client, HttpRequest request){
         try{
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        }catch(IOException | InterruptedException ex){
-            Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, null, ex);
+            HttpResponse<String> send = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("STATUS CODE: " + send.statusCode());
+            if(send.statusCode() == 400){
+                throw new HttpClientException("404 Bad Request");
+            }
+            if(send.statusCode() == 401){
+                throw new HttpClientException("402 Unauthorized");
+            }
+            if(send.statusCode() == 403){
+                throw new HttpClientException("403 Forbidden");
+            }
+            return send;
+        }catch(IOException | HttpClientException | InterruptedException ex){
+            if(ex.getClass().equals(IOException.class)){
+                ErrorHandler.handleException(CmspCommunicator.class.getName(), ex, "Failed to connect: ".concat(ex.getMessage()));
+                Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Failed to connect: ".concat(ex.getMessage()), ex);
+            }else if(ex.getClass().equals(InterruptedException.class)){
+                ErrorHandler.handleException(CmspCommunicator.class.getName(), ex, "Connection interrupted: ".concat(ex.getMessage()));
+                Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Connection interrupted: ".concat(ex.getMessage()), ex);
+            }else if(ex.getClass().equals(HttpClientException.class)){
+                ErrorHandler.handleException(CmspCommunicator.class.getName(), ex, "Connection failed: ".concat(ex.getMessage()));
+                Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Connection failed: ".concat(ex.getMessage()), ex);
+            }
+            
         }
         return null;
     }
@@ -148,8 +174,5 @@ public class CmspCommunicator{
         HttpResponse<String> result = sendRequest(httpClient, httpRequest);
     }
 
-    public ArrayList<Task> getTaskList(){
-        return taskList;
-    }
     
 }
