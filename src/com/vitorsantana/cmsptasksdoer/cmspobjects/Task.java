@@ -38,8 +38,8 @@ public class Task{
         }
         JSONObject answerForm = new JSONObject();
         JSONObject answers = new JSONObject();
-        ThreadLocalRandom.current().setSeed(System.currentTimeMillis());
-        answerForm.put("duration", ThreadLocalRandom.current().nextDouble(30*questions.size(), 40*questions.size()));
+        
+        answerForm.put("duration", new Random(System.currentTimeMillis()).nextDouble(30*questions.size(), 40*questions.size()));
         questions.forEach((question) -> {
             if(question.getTypeT().equals(Question.Types.info)){
                 return;
