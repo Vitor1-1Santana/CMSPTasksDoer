@@ -29,16 +29,19 @@ public class CMSPTasksDoer{
     public static void main(String[] args){
         cmspCommunicator = new CmspCommunicator();
         loginUI = new LoginUI();
-        
+        loginUI.setVisible(true);
         if(args.length >= 2){
             loginUser(Integer.parseInt(args[0]), args[1].charAt(0), args[2].toCharArray());
             
         }
         
+        loginUI.password.addActionListener((e) -> {
         
-        
-        
-        
+            loginUser(Integer.parseInt(loginUI.raNumber.getText()), loginUI.digitNumber.getText().charAt(0), loginUI.password.getPassword());
+        });
+        loginUI.enterUserButton.addActionListener((e) -> {
+            loginUser(Integer.parseInt(loginUI.raNumber.getText()), loginUI.digitNumber.getText().charAt(0), loginUI.password.getPassword());
+        });
     }
     
     /**
@@ -52,28 +55,28 @@ public class CMSPTasksDoer{
      * @param password 
      */
     private static void loginUser(int ra, char digit, char[] password) {
-//        loginUI.errorLabel.setText("");
-//        try{
-//            User user = cmspCommunicator.loginToCmsp(ra, digit, password);
-//            LoginWarning loginWarning = new LoginWarning(loginUI, true);
-//            loginWarning.setNameAndNick(user.getName(), user.getNick());
-//            loginWarning.cancelButton.addActionListener((e) -> {
-//                doTasksBoolean = false;
-//                loginWarning.dispose();
-//            });
-//            loginWarning.doTasks.addActionListener((e) -> {
-//                doTasks(loginWarning, user);
-//            });
-//            loginWarning.setVisible(true);
-//        }catch(Exception ex){
-//            Logger.getLogger(CMSPTasksDoer.class.getName()).log(Level.SEVERE, null, ex);
-//            if(ex.getMessage().equals("Wrong Credentials")){
-//                loginUI.errorLabel.setText("Credenciais Incorretas");
-//            }else{
-//                loginUI.errorLabel.setText("Falha ao fazer login :(");
-//            }
-//            
-//        }
+        loginUI.errorLabel.setText("");
+        try{
+            User user = cmspCommunicator.loginToCmsp(ra, digit, password);
+            LoginWarning loginWarning = new LoginWarning(loginUI, true);
+            loginWarning.setNameAndNick(user.getName(), user.getNick());
+            loginWarning.cancelButton.addActionListener((e) -> {
+                doTasksBoolean = false;
+                loginWarning.dispose();
+            });
+            loginWarning.doTasks.addActionListener((e) -> {
+                doTasks(loginWarning, user);
+            });
+            loginWarning.setVisible(true);
+        }catch(Exception ex){
+            Logger.getLogger(CMSPTasksDoer.class.getName()).log(Level.SEVERE, null, ex);
+            if(ex.getMessage().equals("Wrong Credentials")){
+                loginUI.errorLabel.setText("Credenciais Incorretas");
+            }else{
+                loginUI.errorLabel.setText("Falha ao fazer login :(");
+    }
+    
+        }
     }
     
     /**
@@ -86,47 +89,49 @@ public class CMSPTasksDoer{
      * @param loginWarning
      * @param user 
      */
-    private static void doTasks(User user){
-//        doTasksBoolean = !doTasksBoolean;
-//                new Thread(){
-//                    @Override
-//                    public void run(){
-//                        
-//                        Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
-//                        while(iterator.hasNext() && doTasksBoolean){
-//                            loginWarning.doTasks.setText("Parar");
-//                            Task task = iterator.next();
-//                            if(task.isIsEssay() || task.isIsExam()){
-//                                System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
-//                                iterator.remove();
-//                                continue;
-//                            }
-//                            loginWarning.progressInfo.setText("Respondendo tarefa: "+task.getTitle());
-//                            loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
-//                            task.getQuestions().iterator().forEachRemaining((question) -> {
-//                                loginWarning.progressBar.setString("Respondendo questão do ID: " + question.getId() + " " + task.getQuestions().indexOf(question) + "/" + (task.getQuestions().size()-1));
-//                                loginWarning.progressBar.setValue(task.getQuestions().indexOf(question));
-//                                question.answerQuestion();
-//                            });
-//                            
-//                            task.submitTask();
-//                            iterator.remove();
-//                            loginWarning.setNameAndNick(user.getName(), user.getNick());
-//                            if(task.isAbort()){
-//                                System.out.println("TASK HAS TEXT QUESTION! NOT DOING TASK: " + task.getTitle());
-//                            }else{
-//                                System.out.println("Task " + task.getTitle() + " submitted! :D");
-//                            }
-//                        }
-//                        loginWarning.progressInfo.setText("FINALIZADO :D");
-//                        loginWarning.progressBar.setString("FINALIZADO :D");
-//                        Toolkit.getDefaultToolkit().beep();
-//                        
-//                        loginWarning.doTasks.setText("Realizar tarefas");
-//                    }
-//                    
-//                    
-//                }.start();
+    private static void doTasks(LoginWarning loginWarning, User user){
+        doTasksBoolean = !doTasksBoolean;
+                new Thread(){
+                    @Override
+                    public void run(){
+                        
+                        Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
+                        while(iterator.hasNext() && doTasksBoolean){
+                            loginWarning.doTasks.setText("Parar");
+                            Task task = iterator.next();
+                            if(task.isIsEssay() || task.isIsExam()){
+                                System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
+                                iterator.remove();
+                                continue;
+                            }
+                            loginWarning.progressInfo.setText("Respondendo tarefa: "+task.getTitle());
+                            loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
+                            task.getQuestions().iterator().forEachRemaining((question) -> {
+                                loginWarning.progressBar.setString("Respondendo questão do ID: " + question.getId() + " " + task.getQuestions().indexOf(question) + "/" + (task.getQuestions().size()-1));
+                                loginWarning.progressBar.setValue(task.getQuestions().indexOf(question));
+                                question.answerQuestion();
+                            });
+                            
+                            task.submitTask();
+                            
+                            loginWarning.setNameAndNick(user.getName(), user.getNick());
+                            if(task.isAbort()){
+                                System.out.println("TASK HAS TEXT QUESTION! NOT DOING TASK: " + task.getTitle());
+                            }else{
+                                System.out.println("Task " + task.getTitle() + " submitted! :D");
+                            }
+                            
+                            iterator.remove();
+                        }
+                        loginWarning.progressInfo.setText("FINALIZADO :D");
+                        loginWarning.progressBar.setString("FINALIZADO :D");
+                        Toolkit.getDefaultToolkit().beep();
+                        
+                        loginWarning.doTasks.setText("Realizar tarefas");
+                    }
+                    
+                    
+                }.start();
     }
     
 }

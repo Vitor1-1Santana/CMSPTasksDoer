@@ -23,3 +23,10 @@
 hs_err_pid*
 replay_pid*
 /dist/
+
+*/build/
+html/build
+html/war
+
+#gradle
+.gradle
