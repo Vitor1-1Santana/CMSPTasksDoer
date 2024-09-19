@@ -5,6 +5,12 @@ Este software faz *todas as tarefas do cmsp por você.
 ###### *Menos redações, provas e tarefas com questões que é necessitado a escrita de um texto.
 
 ## Instalação
+### NOVO MÉTODO
+<!-- BEGIN LATEST DOWNLOAD BUTTON -->
+<!-- END LATEST DOWNLOAD BUTTON -->
+
+### MÉTODO ANTIGO
+
 Basta [clicar aqui](https://github.com/Vitor1-1Santana/CMSPTasksDoer/releases), e clicar na versão mais recente.
 Após isso, escolha para qual plataforma você quer baixar(por enquanto só está disponível para PC).
 
