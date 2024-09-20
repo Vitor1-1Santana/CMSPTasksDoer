@@ -1,6 +1,18 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Copyright (C) 2024 vitor
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.vitorsantana.cmsptasksdoer.cmspobjects;
 
@@ -26,7 +38,7 @@ public class Task{
     private ArrayList<Question> questions = new ArrayList<>();
     private String publicationTarget = "";
     private boolean abort = false;
-    private boolean shouldSaveAsADraft = false;
+    private boolean shouldSaveAsADraft = true;
 
     public Task(int id, String title, boolean isExam, boolean isEssay, String publicationTarget){
         this.id = id;
