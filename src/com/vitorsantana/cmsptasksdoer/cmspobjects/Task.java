@@ -5,9 +5,12 @@
 package com.vitorsantana.cmsptasksdoer.cmspobjects;
 
 import com.vitorsantana.cmsptasksdoer.CMSPTasksDoer;
+import com.vitorsantana.cmsptasksdoer.Options;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 
 /**
@@ -23,6 +26,7 @@ public class Task{
     private ArrayList<Question> questions = new ArrayList<>();
     private String publicationTarget = "";
     private boolean abort = false;
+    private boolean shouldSaveAsADraft = false;
 
     public Task(int id, String title, boolean isExam, boolean isEssay, String publicationTarget){
         this.id = id;
@@ -36,6 +40,7 @@ public class Task{
         if(abort){
             return;
         }
+        
         JSONObject answerForm = new JSONObject();
         JSONObject answers = new JSONObject();
         
@@ -58,9 +63,14 @@ public class Task{
         });
         
         
-        answerForm.put("answers", answers).put("executed_on", publicationTarget).put("accessed_on", "room").put("status", "submitted");
-        //System.out.println(answerForm.toString());
+        answerForm.put("answers", answers).put("executed_on", publicationTarget).put("accessed_on", "room").put("status", shouldSaveAsADraft ? "draft" : "submitted");
+        System.out.println(answerForm.toString());
         CMSPTasksDoer.cmspCommunicator.sendTaskSubmition(this, answerForm);
+        
+    }
+    
+    public void submitTaskAsADraft(){
+        
     }
     
 
@@ -110,6 +120,14 @@ public class Task{
 
     public boolean isAbort(){
         return abort;
+    }
+
+    public boolean isShouldSaveAsADraft(){
+        return shouldSaveAsADraft;
+    }
+
+    public void setShouldSaveAsADraft(boolean shouldSaveAsADraft){
+        this.shouldSaveAsADraft = shouldSaveAsADraft;
     }
     
     

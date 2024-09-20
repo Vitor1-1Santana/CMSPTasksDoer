@@ -7,6 +7,7 @@ package com.vitorsantana.cmsptasksdoer;
 import com.vitorsantana.cmsptasksdoer.cmspobjects.Task;
 import com.vitorsantana.cmsptasksdoer.cmspobjects.User;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ public class CMSPTasksDoer{
     public static CmspCommunicator cmspCommunicator;
     private static LoginUI loginUI;
     private static boolean doTasksBoolean = false;
+    private static ArrayList<Task> draftedTasks = new ArrayList();
 
     /**
      * @param args the command line arguments
@@ -91,47 +93,82 @@ public class CMSPTasksDoer{
      */
     private static void doTasks(LoginWarning loginWarning, User user){
         doTasksBoolean = !doTasksBoolean;
-                new Thread(){
-                    @Override
-                    public void run(){
-                        
-                        Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
-                        while(iterator.hasNext() && doTasksBoolean){
-                            loginWarning.doTasks.setText("Parar");
-                            Task task = iterator.next();
-                            if(task.isIsEssay() || task.isIsExam()){
-                                System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
-                                iterator.remove();
-                                continue;
-                            }
-                            loginWarning.progressInfo.setText("Respondendo tarefa: "+task.getTitle());
-                            loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
-                            task.getQuestions().iterator().forEachRemaining((question) -> {
+        if(!doTasksBoolean){
+            loginWarning.doTasks.setText("Parando...");
+            loginWarning.doTasks.setEnabled(false);
+            return;
+        }
+            new Thread(){
+                @Override
+                public void run(){
+                    
+                    Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
+                    while(iterator.hasNext() && doTasksBoolean){
+                        loginWarning.doTasks.setText("Parar");
+                        Task task = iterator.next();
+                        if(task.isIsEssay() || task.isIsExam()){
+                            System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
+                            iterator.remove();
+                            continue;
+                        }
+                        loginWarning.progressInfo.setText("Respondendo tarefa: "+task.getTitle());
+                        loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
+                        task.getQuestions().iterator().forEachRemaining((question) -> {
+                            if(doTasksBoolean){
                                 loginWarning.progressBar.setString("Respondendo questão do ID: " + question.getId() + " " + task.getQuestions().indexOf(question) + "/" + (task.getQuestions().size()-1));
                                 loginWarning.progressBar.setValue(task.getQuestions().indexOf(question));
-                                question.answerQuestion();
-                            });
-                            
-                            task.submitTask();
-                            
-                            loginWarning.setNameAndNick(user.getName(), user.getNick());
-                            if(task.isAbort()){
-                                System.out.println("TASK HAS TEXT QUESTION! NOT DOING TASK: " + task.getTitle());
-                            }else{
-                                System.out.println("Task " + task.getTitle() + " submitted! :D");
+                                if(!question.isSkipQuestion()){
+                                    question.answerQuestion();
+                                }else{
+                                    System.out.println("SKIPPING QUESTION: " + question.getId());
+                                }
+
                             }
-                            
-                            iterator.remove();
+                        });
+                        if(!doTasksBoolean){
+                            break;
                         }
+                        if(!task.isShouldSaveAsADraft()){
+                            task.submitTask();
+                        }else{
+                            task.submitTask();
+                            draftedTasks.add(task);
+                        }
+
+                        loginWarning.setNameAndNick(user.getName(), user.getNick());
+                        if(task.isAbort()){
+                            System.out.println("TASK HAS TEXT QUESTION! NOT DOING TASK: " + task.getTitle());
+                        }else{
+                            System.out.println("Task " + task.getTitle() + " submitted! :D");
+                        }
+
+                        iterator.remove();
+                        try{
+                            Thread.sleep(Options.cooldownTimeBetweenTasks);
+                        }catch(InterruptedException ex){
+                            Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if (doTasksBoolean) {
                         loginWarning.progressInfo.setText("FINALIZADO :D");
                         loginWarning.progressBar.setString("FINALIZADO :D");
                         Toolkit.getDefaultToolkit().beep();
-                        
-                        loginWarning.doTasks.setText("Realizar tarefas");
+                        new DraftedTasks(loginUI, true, draftedTasks).setVisible(true);
+                    } else {
+                        loginWarning.progressInfo.setText("INTERROMPIDO");
+                        loginWarning.progressBar.setString("INTERROMPIDO");
                     }
-                    
-                    
-                }.start();
+                    loginWarning.doTasks.setEnabled(true);
+                    loginWarning.doTasks.setText("Realizar tarefas");
+                }
+
+
+            }.start();
+            
+    }
+    
+    public static void addTaskById(long id){
+        cmspCommunicator.addTaskById(id);
     }
     
 }

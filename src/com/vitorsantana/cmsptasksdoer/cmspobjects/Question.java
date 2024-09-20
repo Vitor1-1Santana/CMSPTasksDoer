@@ -28,6 +28,7 @@ public class Question{
     private JSONObject options;
     private Task task;
     private Object correctAnswer;
+    private boolean skipQuestion = false;
     
 
     public Question(int id, String type, boolean required, JSONObject options, Task task){
@@ -84,12 +85,10 @@ public class Question{
             case order_sentences -> orderSentencesAnswer();
             case fill_words -> fillWordsAnswer();
             case true_false -> trueFalseAnswer();
-            case text_ai -> task.abortTask();
-            case text -> task.abortTask();
+            case text_ai -> skipQuestion();
+            case text -> skipQuestion();
             default -> {
-                if(isRequired()){
-                    task.abortTask();
-                }
+                skipQuestion();
             }
                 
         }
@@ -187,6 +186,11 @@ public class Question{
         correctAnswer = new JSONArray(itemsString);
     }
     
+    private void skipQuestion(){
+        skipQuestion = true;
+        task.setShouldSaveAsADraft(true);
+    }
+    
     private void trueFalseAnswer(){
         multiQuestionAnswer();
     }
@@ -213,6 +217,14 @@ public class Question{
 
     public void setCorrectAnswer(Object correctAnswer){
         this.correctAnswer = correctAnswer;
+    }
+
+    public boolean isSkipQuestion(){
+        return skipQuestion;
+    }
+
+    public void setSkipQuestion(boolean skipQuestion){
+        this.skipQuestion = skipQuestion;
     }
     
     
