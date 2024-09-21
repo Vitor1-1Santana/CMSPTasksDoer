@@ -2,7 +2,7 @@
 
 Este software faz *todas as tarefas do cmsp por você.
 
-###### *Menos redações, provas e tarefas com questões que é necessitado a escrita de um texto.
+###### *Menos redações, provas. Tarefas com questões de texto são salvas como rascunho semicompletas.
 
 ## Instalação
 
