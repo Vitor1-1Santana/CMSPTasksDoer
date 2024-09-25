@@ -38,7 +38,7 @@ public class Task{
     private ArrayList<Question> questions = new ArrayList<>();
     private String publicationTarget = "";
     private boolean abort = false;
-    private boolean shouldSaveAsADraft = true;
+    private boolean shouldSaveAsADraft = false;//Remember to set this to false before making a new realese build.
 
     public Task(int id, String title, boolean isExam, boolean isEssay, String publicationTarget){
         this.id = id;
