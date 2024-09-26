@@ -31,7 +31,7 @@ import org.json.JSONObject;
  */
 public class Question{
     
-    public enum Types{info, multi, single, cloud, order_sentences, fill_words, essay, text, true_false, text_ai}
+    public enum Types{info, multi, single, cloud, order_sentences, fill_words, essay, text, true_false, text_ai, undefined}
     
     private int id;
     private Types typeT;
@@ -50,7 +50,7 @@ public class Question{
             this.typeT = Types.valueOf(type.replace("-", "_"));
         }catch(Exception e){
             Logger.getLogger(Question.class.getName()).log(Level.SEVERE, e.fillInStackTrace().toString());
-            this.typeT = null;
+            this.typeT = Types.undefined;
         }
         this.required = required;
         this.options = options;
@@ -99,9 +99,11 @@ public class Question{
             case true_false -> trueFalseAnswer();
             case text_ai -> skipQuestion();
             case text -> skipQuestion();
+            case undefined -> skipQuestion();
             default -> {
                 skipQuestion();
             }
+            
                 
         }
     }
@@ -200,7 +202,11 @@ public class Question{
     
     private void skipQuestion(){
         skipQuestion = true;
-        task.setShouldSaveAsADraft(true);
+        if(isRequired()){
+            task.setShouldSaveAsADraft(true);
+        }
+        System.out.println("Questão da tarefa com o id: " + task.getId() + " pulada");
+        System.out.println("Amostra do JSON para fins de implementação: "+options.toString());
     }
     
     private void trueFalseAnswer(){

@@ -128,7 +128,6 @@ public class CmspCommunicator {
     private HttpResponse<String> sendRequest(HttpClient client, HttpRequest request) {
         try {
             HttpResponse<String> send = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("STATUS CODE: " + send.statusCode());
             if (send.statusCode() == 400) {
                 throw new HttpClientException("404 Bad Request");
             }

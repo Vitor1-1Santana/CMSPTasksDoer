@@ -41,6 +41,7 @@ public class CMSPTasksDoer{
      * @param args the command line arguments
      */
     public static void main(String[] args){
+        System.out.println("CMSPTasksDoer Version 1.0.1");
         cmspCommunicator = new CmspCommunicator();
         loginUI = new LoginUI();
         loginUI.setVisible(true);

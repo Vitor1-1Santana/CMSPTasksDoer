@@ -30,3 +30,4 @@ html/war
 
 #gradle
 .gradle
+/nbproject/private/

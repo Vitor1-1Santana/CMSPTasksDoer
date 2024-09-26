@@ -62,12 +62,10 @@ public class Task{
                 return;
             }
             JSONObject answerData = new JSONObject();
-            //JSONObject answer = new JSONObject();
             answerData.put("answer", question.getCorrectAnswer());
             answerData.put("question_type", question.type);
             answerData.put("question_id", ""+question.getId());
             
-            //answer.append("answer", question.getCorrectAnswer());
             
             
             answers.put(""+question.getId(),answerData);
@@ -76,7 +74,6 @@ public class Task{
         
         
         answerForm.put("answers", answers).put("executed_on", publicationTarget).put("accessed_on", "room").put("status", shouldSaveAsADraft ? "draft" : "submitted");
-        System.out.println(answerForm.toString());
         CMSPTasksDoer.cmspCommunicator.sendTaskSubmition(this, answerForm);
         
     }
