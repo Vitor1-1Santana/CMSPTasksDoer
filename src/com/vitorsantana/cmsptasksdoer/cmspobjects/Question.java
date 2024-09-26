@@ -97,11 +97,11 @@ public class Question{
             case order_sentences -> orderSentencesAnswer();
             case fill_words -> fillWordsAnswer();
             case true_false -> trueFalseAnswer();
-            case text_ai -> skipQuestion();
-            case text -> skipQuestion();
-            case undefined -> skipQuestion();
+            case text_ai -> skipQuestion("Text Prduction AI");
+            case text -> skipQuestion("Text Prduction");
+            case undefined -> skipQuestion("Question is not supported or not yet handled");
             default -> {
-                skipQuestion();
+                skipQuestion("Question is not supported or not yet handled. Or maybe it's just a title or something.");
             }
             
                 
@@ -201,12 +201,15 @@ public class Question{
     }
     
     private void skipQuestion(){
+        skipQuestion("");
+    }
+    
+    private void skipQuestion(String cause){
         skipQuestion = true;
         if(isRequired()){
             task.setShouldSaveAsADraft(true);
         }
-        System.out.println("Questão da tarefa com o id: " + task.getId() + " pulada");
-        System.out.println("Amostra do JSON para fins de implementação: "+options.toString());
+        System.out.println("Questão id:"+getId()+" da tarefa com o id: " + task.getId() + " pulada. Motivo: " + (cause.isEmpty() ? "Not Specified" : cause));
     }
     
     private void trueFalseAnswer(){

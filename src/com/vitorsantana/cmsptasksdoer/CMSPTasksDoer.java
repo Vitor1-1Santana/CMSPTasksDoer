@@ -144,8 +144,9 @@ public class CMSPTasksDoer{
                         if(!task.isShouldSaveAsADraft()){
                             task.submitTask();
                         }else{
-                            task.submitTask();
                             draftedTasks.add(task);
+                            task.submitTask();
+                            
                         }
 
                         loginWarning.setNameAndNick(user.getName(), user.getNick());
@@ -166,7 +167,9 @@ public class CMSPTasksDoer{
                         loginWarning.progressInfo.setText("FINALIZADO :D");
                         loginWarning.progressBar.setString("FINALIZADO :D");
                         Toolkit.getDefaultToolkit().beep();
-                        new DraftedTasks(loginUI, true, draftedTasks).setVisible(true);
+                        if(!draftedTasks.isEmpty()){
+                            new DraftedTasks(loginUI, true, draftedTasks).setVisible(true);
+                        }
                     } else {
                         loginWarning.progressInfo.setText("INTERROMPIDO");
                         loginWarning.progressBar.setString("INTERROMPIDO");
