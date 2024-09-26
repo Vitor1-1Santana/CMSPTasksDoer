@@ -17,6 +17,11 @@ Paços para reproduzir o comportamento:
 3. Desca até '....'
 4. Veja o erro
 
+**Log de erros**
+```
+Cole o log do console aqui.
+```
+
 **Comportamento esperado**
 Uma descrição clara e concisa sobre o que você esperava acontecer.
 
