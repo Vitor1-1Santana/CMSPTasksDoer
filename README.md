@@ -6,6 +6,12 @@ Este software faz *todas as tarefas do cmsp por você.
 
 ## Instalação
 
+### Método Novo
+
+<!-- BEGIN LATEST DOWNLOAD BUTTON -->
+<!-- END LATEST DOWNLOAD BUTTON -->
+
+### Método antigo
 
 Basta [clicar aqui](https://github.com/Vitor1-1Santana/CMSPTasksDoer/releases), e clicar na versão mais recente.
 Após isso, escolha para qual plataforma você quer baixar(por enquanto só está disponível para PC).
