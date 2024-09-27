@@ -9,6 +9,7 @@ Este software faz *todas as tarefas do cmsp por você.
 ### Método Novo
 
 <!-- BEGIN LATEST DOWNLOAD BUTTON -->
+[![Download zip](https://custom-icon-badges.demolab.com/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white "Download zip")](https://github.com/Vitor1-1Santana/CMSPTasksDoer/releases/latest/CMSPTasksDoer-windows.zip)
 <!-- END LATEST DOWNLOAD BUTTON -->
 
 ### Método antigo
