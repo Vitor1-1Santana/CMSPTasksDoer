@@ -128,7 +128,7 @@ public class Question{
                 optionsBuilder.append("\"").append(i).append("\"").append(":").append(answers[i]).append(",");
             }
             answer = new JSONObject("{\"answer\":{\"answer\":{"+optionsBuilder.toString()+"}}}");
-            JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, this, answer);
+            JSONObject checkAnswer = checkAnswer(task, this, answer);
             isAnswerCorrect = checkAnswer.getBoolean("correct");
             answerShift++;
         }
@@ -157,7 +157,7 @@ public class Question{
             
             
             answer = new JSONObject("{\"answer\":{\"answer\":{"+optionsBuilder.toString()+"}}}");
-            JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, this, answer);
+            JSONObject checkAnswer = checkAnswer(task, this, answer);
             isAnswerCorrect = checkAnswer.getBoolean("correct");
             try{
                 Thread.sleep(Options.cooldownTimeForTryingAnswers);
@@ -176,7 +176,7 @@ public class Question{
         List<Object> wordsString = words.toList();
         Collections.shuffle(wordsString);
         JSONObject answer = new JSONObject("{\"answer\":{\"answer\":"+new JSONArray(wordsString).toString()+"}}");
-        JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, this, answer);
+        JSONObject checkAnswer = checkAnswer(task, this, answer);
         correctAnswer = new JSONArray(wordsString);
     }
     
@@ -186,7 +186,7 @@ public class Question{
         
         Collections.shuffle(sentencesString);
         JSONObject answer = new JSONObject("{\"answer\":{\"answer\":"+new JSONArray(sentencesString).toString()+"}}");
-        JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, this, answer);
+        JSONObject checkAnswer = checkAnswer(task, this, answer);
         correctAnswer = new JSONArray(sentencesString);
     }
     
@@ -196,7 +196,7 @@ public class Question{
         List<Object> itemsString = items.toList();
         Collections.shuffle(itemsString);
         JSONObject answer = new JSONObject("{\"answer\":{\"answer\":"+new JSONArray(itemsString).toString()+"}}");
-        JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, this, answer);
+        JSONObject checkAnswer = checkAnswer(task, this, answer);
         correctAnswer = new JSONArray(itemsString);
     }
     
@@ -210,6 +210,15 @@ public class Question{
             task.setShouldSaveAsADraft(true);
         }
         System.out.println("Questão id:"+getId()+" da tarefa com o id: " + task.getId() + " pulada. Motivo: " + (cause.isEmpty() ? "Not Specified" : cause));
+    }
+    
+    private JSONObject checkAnswer(Task task, Question question, JSONObject jsonObject){
+        JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, question, jsonObject);
+        if(checkAnswer.toString().contains("abOrt")){
+            task.abortTask();
+            return new JSONObject("{\"correct\":true}");
+        }
+        return checkAnswer;
     }
     
     private void trueFalseAnswer(){

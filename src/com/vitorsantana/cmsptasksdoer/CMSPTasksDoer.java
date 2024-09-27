@@ -151,7 +151,7 @@ public class CMSPTasksDoer{
 
                         loginWarning.setNameAndNick(user.getName(), user.getNick());
                         if(task.isAbort()){
-                            System.out.println("TASK HAS TEXT QUESTION! NOT DOING TASK: " + task.getTitle());
+                            System.out.println("TASK HAS UNRECOGNIZED QUESTION! NOT DOING TASK: " + task.getTitle());
                         }else{
                             System.out.println("Task " + task.getTitle() + " submitted! :D");
                         }

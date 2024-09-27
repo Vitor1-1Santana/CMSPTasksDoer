@@ -24,11 +24,14 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSession;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -129,7 +132,52 @@ public class CmspCommunicator {
         try {
             HttpResponse<String> send = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (send.statusCode() == 400) {
-                throw new HttpClientException("404 Bad Request");
+                if(send.uri().toString().contains("correct")){
+                    send = new HttpResponse<String>() {
+                        @Override
+                        public int statusCode(){
+                            return 200;
+                        }
+
+                        @Override
+                        public HttpRequest request(){
+                            return request;
+                        }
+
+                        @Override
+                        public Optional<HttpResponse<String>> previousResponse(){
+                            return Optional.empty();
+                        }
+
+                        @Override
+                        public HttpHeaders headers(){
+                            return null;
+                        }
+
+                        @Override
+                        public String body(){
+                            return "{abOrt:\"abOrt\"}";
+                        }
+
+                        @Override
+                        public Optional<SSLSession> sslSession(){
+                            return Optional.empty();
+                        }
+
+                        @Override
+                        public URI uri(){
+                            return request.uri();
+                        }
+
+                        @Override
+                        public HttpClient.Version version(){
+                            return request.version().orElse(HttpClient.Version.HTTP_1_1);
+                        }
+                    };
+                    Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Connection failed: ".concat("Not able to get the corrction. Questions MUST have the VERIFY button!"));
+                }else{
+                    throw new HttpClientException("404 Bad Request");
+                }
             }
 //            if(send.statusCode() == 401){
 //                throw new HttpClientException("402 Unauthorized");
