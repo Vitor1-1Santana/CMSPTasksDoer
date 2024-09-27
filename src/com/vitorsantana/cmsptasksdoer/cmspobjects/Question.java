@@ -49,7 +49,7 @@ public class Question{
         try{
             this.typeT = Types.valueOf(type.replace("-", "_"));
         }catch(Exception e){
-            Logger.getLogger(Question.class.getName()).log(Level.SEVERE, e.fillInStackTrace().toString());
+            Logger.getLogger(Question.class.getName()).log(Level.WARNING, e.fillInStackTrace().toString());
             this.typeT = Types.undefined;
         }
         this.required = required;
