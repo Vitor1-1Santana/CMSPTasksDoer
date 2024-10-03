@@ -118,12 +118,16 @@ public class CMSPTasksDoer{
                     Iterator<Task> iterator = cmspCommunicator.taskList.iterator();
                     while(iterator.hasNext() && doTasksBoolean){
                         loginWarning.doTasks.setText("Parar");
+                        if(!iterator.hasNext()){
+                            doTasksBoolean = !doTasksBoolean;
+                        }
                         Task task = iterator.next();
-                        if(task.isIsEssay() || task.isIsExam()){
-                            System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " title: " + task.getTitle());
+                        if(task.isIsEssay() || task.isIsExam() || !task.isIsAllowCheckAnswer()){
+                            System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " hasVerifyButton: " + task.isIsAllowCheckAnswer() + " Title: " + task.getTitle());
                             iterator.remove();
                             continue;
                         }
+                        
                         loginWarning.progressInfo.setText("Respondendo tarefa: "+task.getTitle());
                         loginWarning.progressBar.setMaximum(task.getQuestions().size()-1);
                         task.getQuestions().iterator().forEachRemaining((question) -> {
@@ -163,6 +167,7 @@ public class CMSPTasksDoer{
                             Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
                     if (doTasksBoolean) {
                         loginWarning.progressInfo.setText("FINALIZADO :D");
                         loginWarning.progressBar.setString("FINALIZADO :D");

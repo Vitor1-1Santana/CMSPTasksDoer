@@ -39,13 +39,15 @@ public class Task{
     private String publicationTarget = "";
     private boolean abort = false;
     private boolean shouldSaveAsADraft = false;//Remember to set this to false before making a new realese build.
+    private boolean isAllowCheckAnswer = false;
 
-    public Task(int id, String title, boolean isExam, boolean isEssay, String publicationTarget){
+    public Task(int id, String title, boolean isExam, boolean isEssay, String publicationTarget, boolean isAllowCheckAnswer){
         this.id = id;
         this.title = title;
         this.isExam = isExam;
         this.isEssay = isEssay;
         this.publicationTarget = publicationTarget;
+        this.isAllowCheckAnswer = isAllowCheckAnswer;
     }
     
     public void submitTask(){
@@ -137,6 +139,14 @@ public class Task{
 
     public void setShouldSaveAsADraft(boolean shouldSaveAsADraft){
         this.shouldSaveAsADraft = shouldSaveAsADraft;
+    }
+
+    public boolean isIsAllowCheckAnswer(){
+        return isAllowCheckAnswer;
+    }
+
+    public void setIsAllowCheckAnswer(boolean isAllowCheckAnswer){
+        this.isAllowCheckAnswer = isAllowCheckAnswer;
     }
     
     

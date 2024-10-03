@@ -98,7 +98,7 @@ public class CmspCommunicator {
         JSONArray tasks = new JSONArray(tasksResponse.body());
         tasks.forEach((task) -> {
             try {
-                taskList.add(new Task(((JSONObject) task).getInt("id"), ((JSONObject) task).getString("title"), ((JSONObject) task).getBoolean("is_exam"), ((JSONObject) task).getBoolean("is_essay"), roomName));
+                taskList.add(new Task(((JSONObject) task).getInt("id"), ((JSONObject) task).getString("title"), ((JSONObject) task).getBoolean("is_exam"), ((JSONObject) task).getBoolean("is_essay"), roomName, ((JSONObject) task).getBoolean("allow_check_answer")));
                 getQuestion(taskList.get(taskList.size() - 1));
             } catch (JSONException ex) {
                 ErrorHandler.handleException(CmspCommunicator.class.getName(), ex, "Failed to parse task: " + ((JSONObject) task).getString("title") + " with the following Exception: ");
@@ -132,52 +132,7 @@ public class CmspCommunicator {
         try {
             HttpResponse<String> send = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (send.statusCode() == 400) {
-                if(send.uri().toString().contains("correct")){
-                    send = new HttpResponse<String>() {
-                        @Override
-                        public int statusCode(){
-                            return 200;
-                        }
-
-                        @Override
-                        public HttpRequest request(){
-                            return request;
-                        }
-
-                        @Override
-                        public Optional<HttpResponse<String>> previousResponse(){
-                            return Optional.empty();
-                        }
-
-                        @Override
-                        public HttpHeaders headers(){
-                            return null;
-                        }
-
-                        @Override
-                        public String body(){
-                            return "{abOrt:\"abOrt\"}";
-                        }
-
-                        @Override
-                        public Optional<SSLSession> sslSession(){
-                            return Optional.empty();
-                        }
-
-                        @Override
-                        public URI uri(){
-                            return request.uri();
-                        }
-
-                        @Override
-                        public HttpClient.Version version(){
-                            return request.version().orElse(HttpClient.Version.HTTP_1_1);
-                        }
-                    };
-                    Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Connection failed: ".concat("Not able to get the corrction. Questions MUST have the VERIFY button!"));
-                }else{
-                    throw new HttpClientException("404 Bad Request");
-                }
+                throw new HttpClientException("404 Bad Request " + request.toString());
             }
 //            if(send.statusCode() == 401){
 //                throw new HttpClientException("402 Unauthorized");
@@ -231,7 +186,7 @@ public class CmspCommunicator {
         HttpRequest httpRequest = createHttpRequest(URI.create("https://edusp-api.ip.tv/tms/task/" + id + "/apply?preview_mode=false"), authToken, null, "GET", null).build();
         HttpResponse<String> taskIn = sendRequest(httpClient, httpRequest);
         JSONObject tasksInJson = new JSONObject(taskIn.body());
-        Task task = new Task((int) id, tasksInJson.getString("title"), tasksInJson.getBoolean("is_exam"), tasksInJson.getBoolean("is_essay"), tasksInJson.getString("publication_target"));
+        Task task = new Task((int) id, tasksInJson.getString("title"), tasksInJson.getBoolean("is_exam"), tasksInJson.getBoolean("is_essay"), tasksInJson.getString("publication_target"), tasksInJson.getBoolean("allow_check_answer"));
         getQuestion(task);
         taskList.add(task);
     }

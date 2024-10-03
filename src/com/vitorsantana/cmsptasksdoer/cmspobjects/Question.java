@@ -214,10 +214,6 @@ public class Question{
     
     private JSONObject checkAnswer(Task task, Question question, JSONObject jsonObject){
         JSONObject checkAnswer = CMSPTasksDoer.cmspCommunicator.checkAnswer(task, question, jsonObject);
-        if(checkAnswer.toString().contains("abOrt")){
-            task.abortTask();
-            return new JSONObject("{\"correct\":true}");
-        }
         return checkAnswer;
     }
     
