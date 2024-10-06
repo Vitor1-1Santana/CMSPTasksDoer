@@ -76,6 +76,7 @@ public class Task{
         
         
         answerForm.put("answers", answers).put("executed_on", publicationTarget).put("accessed_on", "room").put("status", shouldSaveAsADraft ? "draft" : "submitted");
+        //System.out.println(answerForm.toString(4));
         CMSPTasksDoer.cmspCommunicator.sendTaskSubmition(this, answerForm);
         
     }

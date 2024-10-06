@@ -45,6 +45,11 @@
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="okButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="precisionLevel" min="-2" pref="85" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -65,7 +70,12 @@
                   <Component id="textField2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="19" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="precisionLevel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="16" max="32767" attributes="0"/>
               <Component id="okButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -75,12 +85,12 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Tempo de espera entre tentativas de respostas:"/>
+        <Property name="text" type="java.lang.String" value="Intervalo entre tentativas de respostas:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Tempo de espera entre tarefas:"/>
+        <Property name="text" type="java.lang.String" value="Intervalo entre tarefas:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="textField1">
@@ -117,6 +127,32 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel5">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="N&#xed;vel de precis&#xe3;o nas respostas"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="precisionLevel">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="3">
+            <StringItem index="0" value="Preciso"/>
+            <StringItem index="1" value="Moderado"/>
+            <StringItem index="2" value="Aleat&#xf3;rio"/>
+          </StringArray>
+        </Property>
+        <Property name="selectedIndex" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="Options.precisionLevel" type="code"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Op&#xe7;&#xe3;o 1: Tenta acertar quest&#xf5;es e salva como rascunho se n&#xe3;o conseguir. Op&#xe7;&#xe3;o 2: Tenta acertar, mas chuta aleatoriamente sem salvar em quest&#xf5;es sem verifica&#xe7;&#xe3;o. Op&#xe7;&#xe3;o 3: Chuta todas as respostas, sem verificar corre&#xe7;&#xf5;es."/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="precisionLevelActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

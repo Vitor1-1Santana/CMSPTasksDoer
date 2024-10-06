@@ -18,8 +18,11 @@ package com.vitorsantana.cmsptasksdoer.cmspobjects;
 
 import com.vitorsantana.cmsptasksdoer.CMSPTasksDoer;
 import com.vitorsantana.cmsptasksdoer.Options;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -61,34 +64,6 @@ public class Question{
         if(task.isAbort()){
             return;
         }
-//        switch(typeT){
-//            case single:
-//                singleQuestionAnswerer();
-//                break;
-//            case multi:
-//                multiQuestionAnswer();
-//                break;
-//            case cloud:
-//                cloudQuestionAnswer();
-//                break;
-//            case order_sentences:
-//                orderSentencesAnswer();
-//                break;
-//            case fill_words:
-//                fillWordsAnswer();
-//                break;
-//            case true_false:
-//                trueFalseAnswer();
-//                break;
-//            case text_ai:
-//                task.abortTask();
-//                break;
-//            case text:
-//                task.abortTask();
-//                break;
-//            default:
-//                break;
-//        }
         
         switch(typeT){
             case single -> singleQuestionAnswerer();
@@ -109,65 +84,99 @@ public class Question{
     }
     
     private void singleQuestionAnswerer(){
-        boolean[] answers = new boolean[options.length()];
-        boolean isAnswerCorrect = false;
-        int answerShift = 0;
-        answers[answerShift] = true;
-        JSONObject answer = null;
-        StringBuilder optionsBuilder = null;
-        while(!isAnswerCorrect){
-            optionsBuilder = new StringBuilder();
-            for(int i = 0; i < options.length();i++){
-                if(answers[i] == true){
-                    answers[i] = false;
+        if(task.isIsAllowCheckAnswer() && !(Options.precisionLevel == 2)){
+            boolean[] answers = new boolean[options.length()];
+            boolean isAnswerCorrect = false;
+            int answerShift = 0;
+            answers[answerShift] = true;
+            JSONObject answer = null;
+            StringBuilder optionsBuilder = null;
+            while(!isAnswerCorrect){
+                optionsBuilder = new StringBuilder();
+                for(int i = 0; i < options.length();i++){
+                    if(answers[i] == true){
+                        answers[i] = false;
+                    }
+                    if(i == answerShift){
+                        answers[i] = true;
+                    }
+
+                    optionsBuilder.append("\"").append(i).append("\"").append(":").append(answers[i]).append(",");
                 }
-                if(i == answerShift){
+                answer = new JSONObject("{\"answer\":{\"answer\":{"+optionsBuilder.toString()+"}}}");
+                JSONObject checkAnswer = checkAnswer(task, this, answer);
+                isAnswerCorrect = checkAnswer.getBoolean("correct");
+                answerShift++;
+            }
+            if(isAnswerCorrect){
+                correctAnswer = new JSONObject("{"+optionsBuilder.toString()+"}");
+            }
+        }else{
+            boolean[] answers = new boolean[options.length()];
+            JSONObject answer = null;
+            int luckyIndex = new Random().nextInt(answers.length);
+            StringBuilder optionsBuilder = new StringBuilder();
+            System.out.println(Arrays.toString(answers));
+            for(int i = 0; i < answers.length; i++){
+                answers[i] = false;
+                if(i == luckyIndex){
                     answers[i] = true;
                 }
-
                 optionsBuilder.append("\"").append(i).append("\"").append(":").append(answers[i]).append(",");
             }
-            answer = new JSONObject("{\"answer\":{\"answer\":{"+optionsBuilder.toString()+"}}}");
-            JSONObject checkAnswer = checkAnswer(task, this, answer);
-            isAnswerCorrect = checkAnswer.getBoolean("correct");
-            answerShift++;
-        }
-        if(isAnswerCorrect){
             correctAnswer = new JSONObject("{"+optionsBuilder.toString()+"}");
         }
     }
     
     private void multiQuestionAnswer(){
-        boolean[] answers = new boolean[options.length()];
-        boolean isAnswerCorrect;
-        int answerShift = 0;
-        answers[answerShift] = true;
-        JSONObject answer;
-        StringBuilder optionsBuilder;
-        for (int i = 0; i < Math.pow(2, answers.length); i++) {
-            optionsBuilder = new StringBuilder();
-            String bin = Integer.toBinaryString(i);
-            while ((bin.length() < answers.length))
-                bin = "0" + bin;
-            char[] chars = bin.toCharArray();
-            for (int j = 0; j < chars.length; j++) {
-                answers[j] = chars[j] == '0';
-                optionsBuilder.append("\"").append(j).append("\"").append(":").append(answers[j]).append(",");
+        if(task.isIsAllowCheckAnswer() && !(Options.precisionLevel == 2)){
+            // If checking if the answer is correct is possible
+            boolean[] answers = new boolean[options.length()];
+            boolean isAnswerCorrect;
+            int answerShift = 0;
+            answers[answerShift] = true;
+            JSONObject answer;
+            StringBuilder optionsBuilder;
+            for (int i = 0; i < Math.pow(2, answers.length); i++) {
+                optionsBuilder = new StringBuilder();
+                String bin = Integer.toBinaryString(i);
+                while ((bin.length() < answers.length))
+                    bin = "0" + bin;
+                char[] chars = bin.toCharArray();
+                for (int j = 0; j < chars.length; j++) {
+                    answers[j] = chars[j] == '0';
+                    optionsBuilder.append("\"").append(j).append("\"").append(":").append(answers[j]).append(",");
+                }
+                answer = new JSONObject("{\"answer\":{\"answer\":{"+optionsBuilder.toString()+"}}}");
+                JSONObject checkAnswer = checkAnswer(task, this, answer);
+                isAnswerCorrect = checkAnswer.getBoolean("correct");
+                try{
+                    Thread.sleep(Options.cooldownTimeForTryingAnswers);
+                }catch(InterruptedException ex){
+                    Logger.getLogger(Question.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if(isAnswerCorrect){
+                    correctAnswer = new JSONObject("{"+optionsBuilder+"}");
+                    return;
+                }
             }
-            
-            
-            answer = new JSONObject("{\"answer\":{\"answer\":{"+optionsBuilder.toString()+"}}}");
-            JSONObject checkAnswer = checkAnswer(task, this, answer);
-            isAnswerCorrect = checkAnswer.getBoolean("correct");
-            try{
-                Thread.sleep(Options.cooldownTimeForTryingAnswers);
-            }catch(InterruptedException ex){
-                Logger.getLogger(Question.class.getName()).log(Level.SEVERE, null, ex);
+        }else{
+            boolean[] answers = new boolean[options.length()];
+            JSONObject answer = null;
+            ArrayList<Integer> luckyIndexes = new ArrayList<>(new Random().nextInt(answers.length));
+            for(int i = 0; i < luckyIndexes.size(); i++){
+                luckyIndexes.set(i, new Random().nextInt(answers.length));
             }
-            if(isAnswerCorrect){
-                correctAnswer = new JSONObject("{"+optionsBuilder+"}");
-                return;
+            StringBuilder optionsBuilder = new StringBuilder();
+            System.out.println(Arrays.toString(answers));
+            for(int i = 0; i < answers.length; i++){
+                answers[i] = false;
+                if(luckyIndexes.contains(i)){
+                    answers[i] = true;
+                }
+                optionsBuilder.append("\"").append(i).append("\"").append(":").append(answers[i]).append(",");
             }
+            correctAnswer = new JSONObject("{"+optionsBuilder+"}");
         }
     }
     

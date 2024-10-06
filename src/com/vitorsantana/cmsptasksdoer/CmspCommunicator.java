@@ -94,6 +94,7 @@ public class CmspCommunicator {
             }
         }
         httpRequest = createHttpRequest(URI.create("https://edusp-api.ip.tv/tms/task/todo?publication_target[]=" + roomName + "&publication_target[]=" + categoryId + "&expired_only=false&limit=100&filter_expired=true&offset=0"), authToken, null, "GET", null).build();
+        //httpRequest = createHttpRequest(URI.create("https://edusp-api.ip.tv/tms/task/todo?publication_target[]=" + roomName + "&publication_target[]=" + categoryId + "&expired_only=true&limit=100&filter_expired=false&offset=0"), authToken, null, "GET", null).build();
         HttpResponse<String> tasksResponse = sendRequest(httpClient, httpRequest);
         JSONArray tasks = new JSONArray(tasksResponse.body());
         tasks.forEach((task) -> {
@@ -110,6 +111,7 @@ public class CmspCommunicator {
     }
 
     private void getQuestion(Task task) {
+        
         HttpRequest httpRequest = createHttpRequest(URI.create("https://edusp-api.ip.tv/tms/task/" + task.getId() + "/apply?preview_mode=false"), authToken, null, "GET", null).build();
         HttpResponse<String> taskIn = sendRequest(httpClient, httpRequest);
         JSONObject tasksInJson = new JSONObject(taskIn.body());

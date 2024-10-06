@@ -95,7 +95,7 @@ public class LoginWarning extends javax.swing.JDialog{
         });
 
         warningUserText.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        warningUserText.setText("Bem vindo(a) [USERNAME]!");
+        warningUserText.setText("Bem vindo(a), [USERNAME]!");
 
         progressBar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         progressBar.setMaximumSize(new java.awt.Dimension(146, 14));
@@ -106,9 +106,9 @@ public class LoginWarning extends javax.swing.JDialog{
         progressInfo.setText("progressInfo");
         progressInfo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jLabel3.setText("Nick:");
+        jLabel3.setText("Apelido:");
 
-        jLabel4.setText("Quantidade restante:");
+        jLabel4.setText("Tarefas restantes:");
 
         nickName.setText("SeidyNadaNao");
 
