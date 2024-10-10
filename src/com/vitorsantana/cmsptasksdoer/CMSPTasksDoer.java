@@ -123,7 +123,7 @@ public class CMSPTasksDoer{
                         }
                         Task task = iterator.next();
                         if(task.isIsEssay() || task.isIsExam() || (!task.isIsAllowCheckAnswer() && Options.precisionLevel == 0)){
-                            System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " hasVerifyButton: " + !task.isIsAllowCheckAnswer() + " Title: " + task.getTitle());
+                            System.out.println("NOT DOING THIS TASK: " + "isEssay: " + task.isIsEssay() + " isExam: " + task.isIsExam() + " hasVerifyButton: " + task.isIsAllowCheckAnswer() + " Title: " + task.getTitle());
                             iterator.remove();
                             continue;
                         }
