@@ -19,6 +19,7 @@ package com.vitorsantana.cmsptasksdoer;
 import com.vitorsantana.cmsptasksdoer.cmspobjects.Question;
 import com.vitorsantana.cmsptasksdoer.cmspobjects.Task;
 import com.vitorsantana.cmsptasksdoer.cmspobjects.User;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -142,9 +143,16 @@ public class CmspCommunicator {
             if (send.statusCode() == 403) {
                 throw new HttpClientException("403 Forbidden " + send.body());
             }
+            if(send.statusCode() == 502){
+                return sendRequest(client, request);
+            }
             return send;
         } catch (IOException | HttpClientException | InterruptedException ex) {
             if (ex.getClass().equals(IOException.class)) {
+                if(ex.getCause() != null && ex.getCause().equals(EOFException.class)){
+                    Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Failed to connect: ".concat(ex.getMessage()).concat(" Retrying..."), ex);
+                    return sendRequest(client, request);
+                }
                 ErrorHandler.handleException(CmspCommunicator.class.getName(), ex, "Failed to connect: ".concat(ex.getMessage()));
                 Logger.getLogger(CmspCommunicator.class.getName()).log(Level.SEVERE, "Failed to connect: ".concat(ex.getMessage()), ex);
             } else if (ex.getClass().equals(InterruptedException.class)) {

@@ -28,6 +28,13 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+  WHY DID THEY HAVE TO DO THIS?!?! They added a limit on the client side, and SILENTLY added a limit on the SERVER side! And I,
+  innocent as fuck, was thinking that MY software had a problem, the verify request returned false for ALL possibilites! THEN I REALIZED,
+  if they detected more than two verifications on one question, they returned false even if the question is correct!
+  I WAS TROLLED BY THE EDUCATION SYSTEM DEVELOPERS! GOD DAMN! WHY!?!?!? ;-;
+*/
+
 /**
  *
  * @author vitor
@@ -107,9 +114,15 @@ public class Question{
                 JSONObject checkAnswer = checkAnswer(task, this, answer);
                 isAnswerCorrect = checkAnswer.getBoolean("correct");
                 answerShift++;
+                if(answerShift >= answers.length){
+                    isAnswerCorrect = true;
+                }
             }
+            
             if(isAnswerCorrect){
                 correctAnswer = new JSONObject("{"+optionsBuilder.toString()+"}");
+                System.out.println("CORRECT ANSWER: " + correctAnswer.toString());
+
             }
         }else{
             boolean[] answers = new boolean[options.length()];
@@ -185,7 +198,7 @@ public class Question{
         List<Object> wordsString = words.toList();
         Collections.shuffle(wordsString);
         JSONObject answer = new JSONObject("{\"answer\":{\"answer\":"+new JSONArray(wordsString).toString()+"}}");
-        JSONObject checkAnswer = checkAnswer(task, this, answer);
+        //JSONObject checkAnswer = checkAnswer(task, this, answer);
         correctAnswer = new JSONArray(wordsString);
     }
     
@@ -195,7 +208,7 @@ public class Question{
         
         Collections.shuffle(sentencesString);
         JSONObject answer = new JSONObject("{\"answer\":{\"answer\":"+new JSONArray(sentencesString).toString()+"}}");
-        JSONObject checkAnswer = checkAnswer(task, this, answer);
+        //JSONObject checkAnswer = checkAnswer(task, this, answer);
         correctAnswer = new JSONArray(sentencesString);
     }
     
@@ -205,7 +218,7 @@ public class Question{
         List<Object> itemsString = items.toList();
         Collections.shuffle(itemsString);
         JSONObject answer = new JSONObject("{\"answer\":{\"answer\":"+new JSONArray(itemsString).toString()+"}}");
-        JSONObject checkAnswer = checkAnswer(task, this, answer);
+        //JSONObject checkAnswer = checkAnswer(task, this, answer);
         correctAnswer = new JSONArray(itemsString);
     }
     

@@ -4,6 +4,10 @@ Este software faz *todas as tarefas do cmsp por você.
 
 ###### *Menos redações, provas. Tarefas com questões de texto são salvas como rascunho semicompletas. O programa só funciona com tarefas contendo questões com o botão "VERIFICAR".
 
+# IMPORTANTE
+
+Devido ao novo limite de verificações de perguntas das tarefas CMSP, o nível de precisão de tarefas será aleatório por padrão. O nível preciso não está mais funcionando corretamente e poderá ser removido em futuras atualizações.
+
 ## Instalação
 
 <!-- BEGIN LATEST DOWNLOAD BUTTON -->

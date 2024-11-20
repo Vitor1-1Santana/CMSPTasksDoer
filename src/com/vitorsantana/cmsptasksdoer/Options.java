@@ -23,7 +23,7 @@ package com.vitorsantana.cmsptasksdoer;
 public class Options{
     
     public static long cooldownTimeForTryingAnswers = 1000;
-    public static long cooldownTimeBetweenTasks = 0;
-    public static int precisionLevel = 0;
+    public static long cooldownTimeBetweenTasks = 2000;
+    public static int precisionLevel = 2;
     
 }
